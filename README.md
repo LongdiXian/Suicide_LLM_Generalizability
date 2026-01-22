@@ -12,11 +12,11 @@ The workflow consists of two main steps:
 
 ## Repository Structure
 
-| File / Folder            | Description |
+| File / Data            | Description |
 |--------------------------|-------------|
+| `combine.csv`            | Metadata CSV containing all data, including H1 to H14 question contents, with case IDs, question numbers, text, and suicidal ideation labels. Not publicly available|
+| `H11_data.csv`           | Processed dataset containing only H11 text and labels. Not publicly available|
 | `data_processing.py`     | Script to process HAMD transcript CSV files and generate `H11_data.csv`. |
-| `combine.csv`            | Metadata CSV containing case IDs, question numbers, text, and suicidal ideation labels. |
-| `H11_data.csv`           | Processed dataset containing only H11 text and labels. |
 | `model_training.py`      | Script for training BERT-based classifiers on the processed dataset. Supports chunking, majority voting, cross-validation, and early stopping. |
 | `requirements.txt`       | List of Python dependencies required to run the scripts. |
 
