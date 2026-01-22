@@ -19,7 +19,6 @@ The workflow consists of two main steps:
 | `H11_data.csv`           | Processed dataset containing only H11 text and labels. |
 | `model_training.py`      | Script for training BERT-based classifiers on the processed dataset. Supports chunking, majority voting, cross-validation, and early stopping. |
 | `requirements.txt`       | List of Python dependencies required to run the scripts. |
-| `README.md`              | Project documentation (this file). |
 
 ---
 
