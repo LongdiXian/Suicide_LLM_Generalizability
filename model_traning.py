@@ -105,7 +105,6 @@ def compute_metrics(y_true, y_prob, y_pred):
     npv = tn / (tn + fn) if (tn + fn) > 0 else 0.0
     return {
         "AUC": auc,
-        "F1": f1,
         "Sensitivity": recall,
         "Specificity": specificity,
         "PPV": precision,
@@ -180,121 +179,121 @@ models = ['indiejoseph/bert-base-cantonese']
 all_model_metrics = []
 model_dir = "./saved_models"
 os.makedirs(model_dir, exist_ok=True)
+datatype=['combine','H11_data.csv','nonH11_data']
 
 for model_name in models:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    data1 = pd.read_csv("./H14_used.csv")
-    # data1 = data1[data1['question_number'] == 'H11']
-    data1['label'] = data1['suicidal'].map({'no suicidal': 0, 'passive': 1, 'active': 1})
-    
-    skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    y = data1['label']
-    X = data1['text']
-    all_folds_results=[]
-    
-    folds = list(skf.split(X, y))
-    
-    for fold_idx, (train_idx, val_idx) in enumerate(folds):
-        print(f"\n--- Fold {fold_idx} ---")
-        train_data = data1.iloc[train_idx].reset_index(drop=True)
-        val_data = data1.iloc[val_idx].reset_index(drop=True)
+    for data_nam in datatype:
+        data1 = pd.read_csv(f"{data_nam}.csv")
+        data1['label'] = data1['suicidal'].map({'no suicidal': 0, 'passive': 1, 'active': 1})
+        
+        skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+        y = data1['label']
+        X = data1['text']
+        all_folds_results=[]
+        
+        folds = list(skf.split(X, y))
+        
+        for fold_idx, (train_idx, val_idx) in enumerate(folds):
+            print(f"\n--- Fold {fold_idx} ---")
+            train_data = data1.iloc[train_idx].reset_index(drop=True)
+            val_data = data1.iloc[val_idx].reset_index(drop=True)
 
-        train_texts = train_data['text'].tolist()
-        train_labels = train_data['label'].tolist()
-        val_texts = val_data['text'].tolist()
-        val_labels = val_data['label'].tolist()
-        val_cases = val_data["case"].tolist()
-        
-        train_dataset = TextDataset(train_texts, train_labels, tokenizer)
-        val_dataset = TextDataset(val_texts, val_labels, tokenizer, cases=val_cases)
-        train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
-        val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
-        
-        # Load model
-        try:
-            model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2).to(device)
-        except:
-            base = AutoModel.from_pretrained(model_name)
-            model = CustomClassifier(base_model=base, hidden_size=base.config.hidden_size).to(device)
-        
-        optimizer = AdamW(model.parameters(), lr=1e-5, correct_bias=False)
-        scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=len(train_loader)*30)
-        scaler = GradScaler()
-        
-        # -----------------------------
-        # Training loop with early stopping
-        # -----------------------------
-        patience = 5
-        counter = 0
-        best_auc = 0.0
-        
-        for epoch in range(30):
-            print(f"Epoch {epoch + 1}")
-            train_acc, train_loss = train_epoch(model, train_loader, optimizer, scheduler, device, scaler)
-            print(f"Train loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}")
+            train_texts = train_data['text'].tolist()
+            train_labels = train_data['label'].tolist()
+            val_texts = val_data['text'].tolist()
+            val_labels = val_data['label'].tolist()
+            val_cases = val_data["case"].tolist()
             
-            # Evaluate on validation set
-            cased, true_labels, pred_probs = eval_model(model, val_loader, device)
-            val_chunks = dataset_to_dataframe(val_dataset, tokenizer)
-            fold_results = pd.DataFrame({
-                "cased": val_chunks["case_id"],
-                "true_label": val_chunks["label"],
-                "prob0": pred_probs[:, 0],
-                "prob1": pred_probs[:, 1],
-            })
+            train_dataset = TextDataset(train_texts, train_labels, tokenizer)
+            val_dataset = TextDataset(val_texts, val_labels, tokenizer, cases=val_cases)
+            train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+            val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
             
-            # Majority voting per case
-            voting_df = (
-                fold_results
-                .assign(pred=(fold_results["prob1"] > 0.5).astype(int))
-                .groupby("cased")
-                .agg({
-                    "true_label": "first",
-                    "pred": lambda x: x.value_counts().idxmax(),
-                    "prob1": "mean"
+            # Load model
+            try:
+                model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2).to(device)
+            except:
+                base = AutoModel.from_pretrained(model_name)
+                model = CustomClassifier(base_model=base, hidden_size=base.config.hidden_size).to(device)
+            
+            optimizer = AdamW(model.parameters(), lr=1e-5, correct_bias=False)
+            scheduler = get_scheduler("linear", optimizer=optimizer, num_warmup_steps=0, num_training_steps=len(train_loader)*30)
+            scaler = GradScaler()
+            
+            # -----------------------------
+            # Training loop with early stopping
+            # -----------------------------
+            patience = 5
+            counter = 0
+            best_auc = 0.0
+            
+            for epoch in range(30):
+                print(f"Epoch {epoch + 1}")
+                train_acc, train_loss = train_epoch(model, train_loader, optimizer, scheduler, device, scaler)
+                print(f"Train loss: {train_loss:.4f}, Accuracy: {train_acc:.4f}")
+                
+                # Evaluate on validation set
+                cased, true_labels, pred_probs = eval_model(model, val_loader, device)
+                val_chunks = dataset_to_dataframe(val_dataset, tokenizer)
+                fold_results = pd.DataFrame({
+                    "cased": val_chunks["case_id"],
+                    "true_label": val_chunks["label"],
+                    "prob0": pred_probs[:, 0],
+                    "prob1": pred_probs[:, 1],
                 })
-                .reset_index()
-                .rename(columns={"cased": "case", "true_label": "label", "prob1": "prob"})
-            )
+                
+                # Majority voting per case
+                voting_df = (
+                    fold_results
+                    .assign(pred=(fold_results["prob1"] > 0.5).astype(int))
+                    .groupby("cased")
+                    .agg({
+                        "true_label": "first",
+                        "pred": lambda x: x.value_counts().idxmax(),
+                        "prob1": "mean"
+                    })
+                    .reset_index()
+                    .rename(columns={"cased": "case", "true_label": "label", "prob1": "prob"})
+                )
+                
+                y_true = voting_df["label"]
+                y_pred = voting_df["pred"]
+                y_prob = voting_df["prob"]
+                
+                metrics = compute_metrics(y_true, y_prob, y_pred)
+                current_auc = metrics["AUC"]
+                print(f"Validation AUC: {current_auc:.4f}")
+                
+                # Early stopping check
+                if current_auc > best_auc:
+                    best_auc = current_auc
+                    counter = 0
+                    # Save best model per fold
+                    torch.save(model.state_dict(), f"{model_dir}/{model_name.split('/')[-1]}_fold{fold_idx}_best.pt")
+                else:
+                    counter += 1
+                    if counter >= patience:
+                        print(f"Early stopping triggered at epoch {epoch + 1}")
+                        break
             
-            y_true = voting_df["label"]
-            y_pred = voting_df["pred"]
-            y_prob = voting_df["prob"]
-            
-            metrics = compute_metrics(y_true, y_prob, y_pred)
-            current_auc = metrics["AUC"]
-            print(f"Validation AUC: {current_auc:.4f}")
-            
-            # Early stopping check
-            if current_auc > best_auc:
-                best_auc = current_auc
-                counter = 0
-                # Save best model per fold
-                torch.save(model.state_dict(), f"{model_dir}/{model_name.split('/')[-1]}_fold{fold_idx}_best.pt")
+            # Compute p-value for Mann-Whitney U test
+            pos_probs = y_prob[y_true == 1]
+            neg_probs = y_prob[y_true == 0]
+            if (len(pos_probs) > 0) and (len(neg_probs) > 0):
+                u_stat, p_value = mannwhitneyu(pos_probs, neg_probs, alternative='two-sided')
             else:
-                counter += 1
-                if counter >= patience:
-                    print(f"Early stopping triggered at epoch {epoch + 1}")
-                    break
-        
-        # Compute p-value for Mann-Whitney U test
-        pos_probs = y_prob[y_true == 1]
-        neg_probs = y_prob[y_true == 0]
-        if (len(pos_probs) > 0) and (len(neg_probs) > 0):
-            u_stat, p_value = mannwhitneyu(pos_probs, neg_probs, alternative='two-sided')
-        else:
-            p_value = np.nan
-        
-        metrics["Model"] = model_name.split("/")[-1]
-        metrics["Question"] = 'H14'
-        metrics["pvalue"] = p_value
-        all_model_metrics.append(metrics)
-        all_folds_results.append(fold_results)
+                p_value = np.nan
+            
+            metrics["Model"] = model_name.split("/")[-1]
+            metrics["Question"] = f'{data_nam}'
+            metrics["pvalue"] = p_value
+            all_model_metrics.append(metrics)
+            all_folds_results.append(fold_results)
 
 # -----------------------------
 # Save metrics summary
 # -----------------------------
 metrics_df = pd.DataFrame(all_model_metrics)
-metrics_df.to_csv("./H14Alldata_model_metrics_summary.csv", index=False)
-# metrics_df.to_csv("./H11_model_metrics_summary.csv", index=False)
+metrics_df.to_csv("./Metrics_summary.csv", index=False)
 print(metrics_df)

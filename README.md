@@ -1,11 +1,11 @@
-# Exploring the Generalizability and Explainability of LLMs in Detecting Suicidal Ideation: The Impact of Data Heterogeneity
+# Exploring Generalizability and Explainability of LLMs in Classifying Clinician Rated Suicidal Ideation Using Heterogeneous Data
 
 ## Overview
-With the recent advancement of artificial intelligence (AI) and large language models (LLMs), the use of text analysis to detect suicidal ideation can be a promising tool. However, the performance of such detection system could be influenced by the language use difference caused by individuals’ alexithymic characteristics (difficulties in expressing emotion with unique language pattern), resulting in the subgroup disparity. The current study aims to explore the capability of a detection system on a clinical sample of heterogeneous language use (i.e., systematic difference in language use as influenced by patient characteristics and the language context).
+While artificial intelligence (AI) and large language models (LLMs) have shown promise in identifying and classifying suicidal ideation, their generalizability and equity in the presence of heterogeneous clinical data remain largely unexplored. This study hypothesized a subgroup disparity in a crude AI classifier of clinician-rated suicidal ideation because of the heterogeneity in language use and proposed a factorization approach to decompose complex data into simpler components by reducing the topic dimensions of clinical transcripts.
 
 The workflow consists of two main steps:
 
-1. **Data Processing**: Extract H11 question text from transcript CSV files, including full question text and interviewee responses.  
+1. **Data Processing**: Reduce topic dimension by identifying and extracting H11-only and non-H11 response text from transcript CSV files. 
 2. **Model Training**: Train transformer-based models (e.g., BERT) using the extracted text with 10-fold cross-validation, chunking (for sequences >512 tokens), overlapping (128 tokens), and early stopping (patience = 5). Evaluation metrics include AUC, Sensitivity, Specificity, PPV, and NPV.
 
 ---
@@ -16,8 +16,9 @@ The workflow consists of two main steps:
 |--------------------------|-------------|
 | `combine.csv`            | Metadata CSV containing all data, including H1 to H14 question contents, with case IDs, question numbers, text, and suicidal ideation labels. Not publicly available|
 | `H11_data.csv`           | Processed dataset containing only H11 text and labels. Not publicly available|
-| `data_processing.py`     | Script to process HAMD transcript CSV files and generate `H11_data.csv`. |
-| `model_training.py`      | Script for training BERT-based classifiers on the processed dataset. Supports chunking, majority voting, cross-validation, and early stopping. |
+| `nonH11_data.csv`        | Processed dataset containing excluded H11 texts and labels. Not publicly available.|
+| `data_processing.py`     | Script to process HAMD transcript CSV files and generate `H11_data.csv`,`nonH11_data.csv`. |
+| `model_training.py`      | Script for training BERT-based classifiers on the processed dataset |
 | `requirements.txt`       | List of Python dependencies required to run the scripts. |
 
 ---
@@ -25,12 +26,9 @@ The workflow consists of two main steps:
 ## Data Processing
 
 ### Steps
-1. Load `combine.csv`, which contains case IDs, question numbers (H1 to H14), text, and labels (`no suicidal`, `passive`, `active`).  
-2. For each case, read the corresponding transcript CSV file from the `data` folder.  
-3. Identify the H11 question section and extract its text.  
-4. Extract both the full text and the interviewee-specific responses.  
-5. Handle missing files or columns gracefully by logging and inserting `NaN` values.  
-6. Save the processed data into `H11_data.csv`.
+1.	Load combine.csv, which contains case IDs, question numbers (H1 to H14), text (HDRS transcripts), and labels (0 or 1).
+2.	Identify the H11-only and non-H11 question section and extract and save the corresponding responses text as H11_data.csv and nonH11_data.csv respectively.
+3.	Load the corresponding csv files to train the topic-general classifier, mood-related classifier and suicide-specific classifier.
 
 ### Run
 ```bash
