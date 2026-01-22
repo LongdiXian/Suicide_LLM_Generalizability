@@ -5,8 +5,8 @@ While artificial intelligence (AI) and large language models (LLMs) have shown p
 
 The workflow consists of two main steps:
 
-1. **Data Processing**: Reduce topic dimension by identifying and extracting H11-only and non-H11 response text from transcript CSV files. 
-2. **Model Training**: Train transformer-based models (e.g., BERT) using the extracted text with 10-fold cross-validation, chunking (for sequences >512 tokens), overlapping (128 tokens), and early stopping (patience = 5). Evaluation metrics include AUC, Sensitivity, Specificity, PPV, and NPV.
+1. **Data Processing**: Reduce topic dimension by identifying and extracting H11-only and non-H11 response text from clincial transcripts.
+2. **Model Training**: Train transformer-based models (i.e., BERT) using the extracted text with 10-fold cross-validation, chunking (for sequences >512 tokens), overlapping (128 tokens), and early stopping (patience = 5). Evaluation metrics include AUC, Sensitivity, Specificity, PPV, and NPV.
 
 ---
 
@@ -17,7 +17,7 @@ The workflow consists of two main steps:
 | `combine.csv`            | Metadata CSV containing all data, including H1 to H14 question contents, with case IDs, question numbers, text, and suicidal ideation labels. Not publicly available|
 | `H11_data.csv`           | Processed dataset containing only H11 text and labels. Not publicly available|
 | `nonH11_data.csv`        | Processed dataset containing excluded H11 texts and labels. Not publicly available.|
-| `data_processing.py`     | Script to process HAMD transcript CSV files and generate `H11_data.csv`,`nonH11_data.csv`. |
+| `data_processing.py`     | Script to process HDRS transcripts and generate H11_data.csv,nonH11_data.csv. |
 | `model_training.py`      | Script for training BERT-based classifiers on the processed dataset |
 | `requirements.txt`       | List of Python dependencies required to run the scripts. |
 
