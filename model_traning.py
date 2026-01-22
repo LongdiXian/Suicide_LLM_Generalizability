@@ -179,7 +179,7 @@ models = ['indiejoseph/bert-base-cantonese']
 all_model_metrics = []
 model_dir = "./saved_models"
 os.makedirs(model_dir, exist_ok=True)
-datatype=['combine','H11_data','nonH11_data']
+datatype=['combine','nonH11_data','H11_data'] #for topic-general classifier, mood-related classifier and suicide-specific classifier respectively
 
 for model_name in models:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
