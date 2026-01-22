@@ -27,7 +27,7 @@ The workflow consists of two main steps:
 
 ### Steps
 1.	Load combine.csv, which contains case IDs, question numbers (H1 to H14), text (HDRS transcripts), and labels (0 or 1).
-2.	Identify the H11-only and non-H11 question section and extract and save the corresponding responses text as H11_data.csv and nonH11_data.csv respectively.
+2.	Identify the H11-only and non-H11 question section and extract & save the corresponding responses text as H11_data.csv and nonH11_data.csv respectively.
 3.	Load the corresponding csv files to train the topic-general classifier, mood-related classifier and suicide-specific classifier.
 
 ### Run
