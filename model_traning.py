@@ -179,14 +179,13 @@ models = ['indiejoseph/bert-base-cantonese']
 all_model_metrics = []
 model_dir = "./saved_models"
 os.makedirs(model_dir, exist_ok=True)
-datatype=['combine','H11_data.csv','nonH11_data']
+datatype=['combine','H11_data','nonH11_data']
 
 for model_name in models:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     for data_nam in datatype:
         data1 = pd.read_csv(f"{data_nam}.csv")
-        data1['label'] = data1['suicidal'].map({'no suicidal': 0, 'passive': 1, 'active': 1})
-        
+        data1['label'] = data1['label'].map({'no suicidal': 0, 'passive': 1, 'active': 1})
         skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
         y = data1['label']
         X = data1['text']
@@ -290,6 +289,16 @@ for model_name in models:
             metrics["pvalue"] = p_value
             all_model_metrics.append(metrics)
             all_folds_results.append(fold_results)
+        data = all_folds_results
+        cleaned_data = []
+        for row in data:
+            if isinstance(row, pd.DataFrame):
+                cleaned_data.extend(row.to_dict(orient="records"))
+            elif isinstance(row, dict):  # 如果是字典，直接添加
+                cleaned_data.append(row)
+        df = pd.DataFrame(cleaned_data)
+        csv_file_name = f"./{data_nam}_results.csv"
+        df.to_csv(csv_file_name, index=False, encoding="utf-8")    
 
 # -----------------------------
 # Save metrics summary
