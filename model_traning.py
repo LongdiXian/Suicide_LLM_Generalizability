@@ -185,7 +185,6 @@ for model_name in models:
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     for data_nam in datatype:
         data1 = pd.read_csv(f"{data_nam}.csv")
-        data1['label'] = data1['label'].map({'no suicidal': 0, 'passive': 1, 'active': 1})
         skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
         y = data1['label']
         X = data1['text']
