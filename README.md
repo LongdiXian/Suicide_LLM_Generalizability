@@ -1,7 +1,7 @@
 # Exploring the Generalizability and Explainability of LLMs in Detecting Suicidal Ideation: The Impact of Data Heterogeneity
 
 ## Overview
-This project extracts interview question text from HAMD (Hamilton Depression Rating Scale) translated transcripts and uses BERT-based models to detect suicidal ideation. Specifically, it focuses on extracting and analyzing the H11 question content.  
+With the recent advancement of artificial intelligence (AI) and large language models (LLMs), the use of text analysis to detect suicidal ideation can be a promising tool. However, the performance of such detection system could be influenced by the language use difference caused by individuals’ alexithymic characteristics (difficulties in expressing emotion with unique language pattern), resulting in the subgroup disparity. The current study aims to explore the capability of a detection system on a clinical sample of heterogeneous language use (i.e., systematic difference in language use as influenced by patient characteristics and the language context).
 
 The workflow consists of two main steps:
 
