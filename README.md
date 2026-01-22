@@ -34,8 +34,8 @@ The workflow consists of two main steps:
 ### Run
 #### Data Processing Run
 ```bash
+#### Data Processing Run
 python data_processing.py
 
-#### Data Processing Run
-```bash
+#### Model Traning  Run
 python data_processing.py
