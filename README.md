@@ -35,50 +35,6 @@ The workflow consists of two main steps:
 
 ---
 
-## Distribution Shift Analysis
-To assess the robustness of LLM evaluation, We compared the distribution of important predictors between development and evaluation datasets.
-Model-predicted probabilities were used as a model-aware proxy for important predictors, and latent CLS embedding norms were analyzed to assess similarity in internal representations.
-
-### Important Predictors
-<p align="center">
-  <img src="figures/combine_prob_dist.png" width="650">
-</p>
-
-**Figure 1.** Distribution of model-predicted probabilities(Combine).
-
-<p align="center">
-  <img src="figures/H11_data_prob_dist.png" width="650">
-</p>
-
-**Figure 2.** Distribution of model-predicted probabilities(H11_data).
-
-<p align="center">
-  <img src="figures/nonH11_data_prob_dist.png" width="650">
-</p>
-
-**Figure 3.** Distribution of model-predicted probabilities(nonH11_data).
-
-### Latent CLS embedding norms
-<p align="center">
-  <img src="figures/combine_cls_dist.png" width="650">
-</p>
-
-**Figure 1.** Distribution of CLS embedding norms.(Combine).
-
-<p align="center">
-  <img src="figures/H11_data_cls_dist.png" width="650">
-</p>
-
-**Figure 2.** Distribution of CLS embedding norms.(H11_data).
-
-<p align="center">
-  <img src="figures/nonH11_data_cls_dist.png" width="650">
-</p>
-
-**Figure 3.** Distribution of CLS embedding norms.(nonH11_data).
-
----
-
 ### Run
 ```bash
 # Run data processing
