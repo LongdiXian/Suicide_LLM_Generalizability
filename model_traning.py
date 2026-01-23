@@ -293,7 +293,7 @@ for model_name in models:
         for row in data:
             if isinstance(row, pd.DataFrame):
                 cleaned_data.extend(row.to_dict(orient="records"))
-            elif isinstance(row, dict):  # 如果是字典，直接添加
+            elif isinstance(row, dict): 
                 cleaned_data.append(row)
         df = pd.DataFrame(cleaned_data)
         csv_file_name = f"./{data_nam}_results.csv"
