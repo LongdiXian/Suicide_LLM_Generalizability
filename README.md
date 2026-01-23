@@ -33,6 +33,16 @@ The workflow consists of two main steps:
 2.	Identify the H11-only and non-H11 question section and extract & save the corresponding responses text as H11_data.csv and nonH11_data.csv respectively.
 3.	Load the corresponding csv files to train the topic-general classifier, mood-related classifier and suicide-specific classifier.
 
+###
+
+#### Predicted Probability Distribution
+![Predicted probability distribution](figures/combine_length_distribution_comparison.png)
+
+#### CLS Embedding Norm Distribution
+![CLS embedding norm distribution](figures/combine_length_distribution_comparison.png)
+
+---
+
 ### Run
 ```bash
 # Run data processing
@@ -41,8 +51,3 @@ python data_processing.py
 # Run model training
 python model_training.py
 
-### Predicted Probability Distribution
-![Predicted probability distribution](figures/combine_length_distribution_comparison.png)
-
-### CLS Embedding Norm Distribution
-![CLS embedding norm distribution](figures/combine_length_distribution_comparison.png)
