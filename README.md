@@ -40,3 +40,9 @@ python data_processing.py
 
 # Run model training
 python model_training.py
+
+### Predicted Probability Distribution
+![Predicted probability distribution](figures/combine_length_distribution_comparison.png)
+
+### CLS Embedding Norm Distribution
+![CLS embedding norm distribution](figures/combine_length_distribution_comparison.png)
