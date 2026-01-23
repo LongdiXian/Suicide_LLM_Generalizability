@@ -35,12 +35,17 @@ The workflow consists of two main steps:
 
 ###
 
-#### Predicted Probability Distribution
-![Predicted probability distribution](figures/combine_length_distribution_comparison.png)
+<p align="center">
+  <img src="figures/combine_length_distribution_comparison.png" width="650">
+</p>
 
-#### CLS Embedding Norm Distribution
-![CLS embedding norm distribution](figures/combine_length_distribution_comparison.png)
+**Figure 1.** Distribution of model-predicted probabilities.
 
+<p align="center">
+  <img src="figures/combine_length_distribution_comparison.png" width="650">
+</p>
+
+**Figure 2.** Distribution of CLS embedding norms.
 ---
 
 ### Run
