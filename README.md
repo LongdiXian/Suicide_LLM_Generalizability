@@ -7,6 +7,7 @@ The workflow consists of two main steps:
 
 1. **Data Processing**: Reduce topic dimension by identifying and extracting H11-only and non-H11 response text from clincial transcripts.
 2. **Model Training**: Train transformer-based models (i.e., BERT) using the extracted text with 10-fold cross-validation, chunking (for sequences >512 tokens), overlapping (128 tokens), and early stopping (patience = 5). Evaluation metrics include AUC, Sensitivity, Specificity, PPV, and NPV.
+
 ***Computational Cost***: Estimated 10-20 GFLOPs per inference; training time is 27 mins for one classifier using a single GPU (NVIDIA GeForce RTX 5090 D).
 ---
 
