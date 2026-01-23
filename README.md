@@ -33,19 +33,50 @@ The workflow consists of two main steps:
 2.	Identify the H11-only and non-H11 question section and extract & save the corresponding responses text as H11_data.csv and nonH11_data.csv respectively.
 3.	Load the corresponding csv files to train the topic-general classifier, mood-related classifier and suicide-specific classifier.
 
-###
+---
 
+## Distribution Shift Analysis
+To assess the robustness of LLM evaluation, We compared the distribution of important predictors between development and evaluation datasets.
+Model-predicted probabilities were used as a model-aware proxy for important predictors, and latent CLS embedding norms were analyzed to assess similarity in internal representations.
+
+### Important Predictors
 <p align="center">
-  <img src="figures/combine_length_distribution_comparison.png" width="650">
+  <img src="figures/combine_prob_dist.png" width="650">
 </p>
 
-**Figure 1.** Distribution of model-predicted probabilities.
+**Figure 1.** Distribution of model-predicted probabilities(Combine).
 
 <p align="center">
-  <img src="figures/combine_length_distribution_comparison.png" width="650">
+  <img src="figures/H11_data_prob_dist.png" width="650">
 </p>
 
-**Figure 2.** Distribution of CLS embedding norms.
+**Figure 2.** Distribution of model-predicted probabilities(H11_data).
+
+<p align="center">
+  <img src="figures/nonH11_data_prob_dist.png" width="650">
+</p>
+
+**Figure 3.** Distribution of model-predicted probabilities(nonH11_data).
+
+### Latent CLS embedding norms
+<p align="center">
+  <img src="figures/combine_cls_dist.png" width="650">
+</p>
+
+**Figure 1.** Distribution of CLS embedding norms.(Combine).
+
+<p align="center">
+  <img src="figures/H11_data_cls_dist.png" width="650">
+</p>
+
+**Figure 2.** Distribution of CLS embedding norms.(H11_data).
+
+<p align="center">
+  <img src="figures/nonH11_data_cls_dist.png" width="650">
+</p>
+
+**Figure 3.** Distribution of CLS embedding norms.(nonH11_data).
+
 ---
 
 ### Run
